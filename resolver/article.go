@@ -9,7 +9,23 @@ type articleResolver struct {
 }
 
 func (r articleResolver) Fetch(params graphql.ResolveParams) (interface{}, error) {
-	return "list of article", nil
+	articles := []gographql.Article{
+		{
+			ID:    "foo",
+			Title: "Foo",
+		},
+	}
+
+	return articles, nil
+}
+
+func (r articleResolver) GetByID(params graphql.ResolveParams) (interface{}, error) {
+	article := gographql.Article{
+		ID:    "foo",
+		Title: "Foo",
+	}
+
+	return article, nil
 }
 
 // Initiator initiates the schema module.
@@ -19,7 +35,7 @@ func (i Initiator) Build() gographql.ArticleResolver {
 	return i(&articleResolver{})
 }
 
-func NewSchema() Initiator {
+func NewArticleResolver() Initiator {
 	return func(s *articleResolver) *articleResolver {
 		return s
 	}

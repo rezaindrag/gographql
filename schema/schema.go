@@ -10,39 +10,30 @@ type Schema struct {
 }
 
 func (s Schema) Query() *graphql.Object {
-	articleField := graphql.Field{
-		Name:              "",
-		Type:              graphql.String,
-		Args:              nil,
-		Resolve:           s.articleResolver.Fetch,
-		DeprecationReason: "",
-		Description:       "",
-	}
-
 	fields := graphql.Fields{
-		"articles": &articleField,
+		"articles": &graphql.Field{
+			Type:        graphql.NewList(Article),
+			Description: "Get a list of articles.",
+			Resolve:     s.articleResolver.Fetch,
+		},
+		"article": &graphql.Field{
+			Type:        Article,
+			Description: "Get detail of article.",
+			Args: graphql.FieldConfigArgument{
+				"id": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.String),
+				},
+			},
+			Resolve: s.articleResolver.GetByID,
+		},
 	}
 
 	query := graphql.ObjectConfig{
-		Name:        "",
-		Interfaces:  nil,
-		Fields:      fields,
-		IsTypeOf:    nil,
-		Description: "",
+		Name:   "Query",
+		Fields: fields,
 	}
 
 	return graphql.NewObject(query)
-}
-
-func (s Schema) Mutation() *graphql.Object {
-	mutation := graphql.ObjectConfig{
-		Name:        "",
-		Interfaces:  nil,
-		Fields:      nil,
-		IsTypeOf:    nil,
-		Description: "",
-	}
-	return graphql.NewObject(mutation)
 }
 
 // Initiator initiates the schema module.
