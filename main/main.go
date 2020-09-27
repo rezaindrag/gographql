@@ -4,6 +4,7 @@ import (
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
 	"github.com/labstack/echo"
+	"github.com/rezaindrag/gographql"
 	"github.com/rezaindrag/gographql/resolver"
 	"github.com/rezaindrag/gographql/schema"
 	"github.com/sirupsen/logrus"
@@ -22,6 +23,8 @@ func main() {
 	if err != nil {
 		logrus.Fatal(err)
 	}
+
+	e.Use(gographql.ErrorMiddleware())
 
 	e.POST("/graphql", echo.WrapHandler(handler.New(&handler.Config{
 		Schema: &gqlSchema,
