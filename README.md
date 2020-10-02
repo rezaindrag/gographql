@@ -1,2 +1,3 @@
-# gogql
-Using GraphQL in Golang
+# GoGraphQL
+
+Golang with GraphQL Boilerplate 
