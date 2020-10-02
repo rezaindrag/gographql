@@ -9,6 +9,19 @@ type Schema struct {
 	articleResolver gographql.ArticleResolver
 }
 
+var json = graphql.NewScalar(
+	graphql.ScalarConfig{
+		Name: "JSON",
+		ParseValue: func(value interface{}) interface{} {
+			if value == nil {
+				return make(map[string]interface{})
+			}
+			return value
+		},
+		Description: "The JSON scalar type represents JavaScript object notation syntax.",
+	},
+)
+
 func (s Schema) Query() *graphql.Object {
 	fields := graphql.Fields{
 		"articles": &graphql.Field{
@@ -30,6 +43,41 @@ func (s Schema) Query() *graphql.Object {
 
 	query := graphql.ObjectConfig{
 		Name:   "Query",
+		Fields: fields,
+	}
+
+	return graphql.NewObject(query)
+}
+
+func (s Schema) Mutation() *graphql.Object {
+	fields := graphql.Fields{
+		"createArticle": &graphql.Field{
+			Type:        Article,
+			Description: "Create a new article.",
+			Args: graphql.FieldConfigArgument{
+				"article": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(json),
+				},
+			},
+			Resolve: s.articleResolver.Create,
+		},
+		"updateArticle": &graphql.Field{
+			Type:        Article,
+			Description: "Update an article.",
+			Args: graphql.FieldConfigArgument{
+				"id": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.String),
+				},
+				"article": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(json),
+				},
+			},
+			Resolve: s.articleResolver.Update,
+		},
+	}
+
+	query := graphql.ObjectConfig{
+		Name:   "Mutation",
 		Fields: fields,
 	}
 

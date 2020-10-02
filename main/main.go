@@ -18,7 +18,8 @@ func main() {
 	mySchema := schema.NewSchema().WithArticleResolver(articleResolver).Build()
 
 	gqlSchema, err := graphql.NewSchema(graphql.SchemaConfig{
-		Query: mySchema.Query(),
+		Query:    mySchema.Query(),
+		Mutation: mySchema.Mutation(),
 	})
 	if err != nil {
 		logrus.Fatal(err)
