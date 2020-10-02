@@ -1,3 +1,3 @@
-# Gogql
+# GoGraphQL
 
 Golang with GraphQL Boilerplate 
